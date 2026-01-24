@@ -1,50 +1,50 @@
 // News Management System with LocalStorage
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const newsGrid = document.getElementById('news-grid');
     const refreshBtn = document.getElementById('refresh-btn');
     const searchInput = document.getElementById('news-search');
     const searchBtn = document.getElementById('news-search-btn');
     const imageGallery = document.getElementById('image-gallery');
     const viewOldNewsBtn = document.getElementById('view-old-news-btn');
-    
+
     let allNews = []; // Store all news for searching
     let currentView = 'all'; // Changed default view to 'all' (old news)
     let newsStorageKey = 'spaceNewsItems';
-    
+
     // Fetch NASA Image of the Day
     fetchNASAImage();
-    
+
     // Initialize news system
     initializeNewsSystem();
-    
+
     // Fetch NASA Image of the Day
     function fetchNASAImage() {
         // Using a placeholder since NASA API requires API key
         // In a real implementation, you would use: https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY
         imageGallery.innerHTML = `
             <div class="gallery-item">
-                <img src="https://placehold.co/600x400/0b0c10/66fcf1?text=NASA+Image+of+the Day" alt="NASA Image of the Day" class="gallery-image">
+                <img src="https://placehold.co/600x400/0f172a/38bdf8?text=NASA+Image+of+the+Day" alt="NASA Image of the Day" class="gallery-image">
                 <div class="gallery-info">
                     <h3>NASA Image of the Day</h3>
                     <p>Stunning astronomical image from NASA's archives</p>
                 </div>
             </div>
             <div class="gallery-item">
-                <img src="https://placehold.co/600x400/0b0c10/66fcf1?text=Hubble+Image" alt="Hubble Image" class="gallery-image">
+                <img src="https://placehold.co/600x400/0f172a/38bdf8?text=Hubble+Image" alt="Hubble Image" class="gallery-image">
                 <div class="gallery-info">
                     <h3>Hubble Telescope Image</h3>
                     <p>Deep space image captured by Hubble Space Telescope</p>
                 </div>
             </div>
             <div class="gallery-item">
-                <img src="https://placehold.co/600x400/0b0c10/66fcf1?text=JWST+Image" alt="James Webb Image" class="gallery-image">
+                <img src="https://placehold.co/600x400/0f172a/38bdf8?text=JWST+Image" alt="James Webb Image" class="gallery-image">
                 <div class="gallery-info">
                     <h3>James Webb Space Telescope</h3>
                     <p>Infrared image from JWST showing distant galaxies</p>
                 </div>
             </div>
         `;
-        
+
         // Animate gallery items
         setTimeout(() => {
             const galleryItems = document.querySelectorAll('.gallery-item');
@@ -55,24 +55,24 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }, 500);
     }
-    
+
     // Initialize the news system
     function initializeNewsSystem() {
         // Load news from localStorage
         loadNewsFromStorage();
-        
+
         // Add some sample news if storage is empty
         if (getAllNews().length === 0) {
             addSampleNews();
         }
-        
+
         // Display all news by default (changed from 'today' to 'all')
         displayNews('all');
-        
+
         // Set up automatic refresh at midnight
         setupMidnightRefresh();
     }
-    
+
     // Load news from localStorage
     function loadNewsFromStorage() {
         try {
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
             allNews = [];
         }
     }
-    
+
     // Save news to localStorage
     function saveNewsToStorage() {
         try {
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error saving news to localStorage:', error);
         }
     }
-    
+
     // Get all news from storage
     function getAllNews() {
         try {
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return [];
         }
     }
-    
+
     // Add a new news item
     function addNews(newsItem) {
         // Validate required properties
@@ -115,33 +115,33 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Invalid news item. Required properties: id, date, title, content');
             return false;
         }
-        
+
         // Validate date format (YYYY-MM-DD)
         const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
         if (!dateRegex.test(newsItem.date)) {
             console.error('Invalid date format. Use YYYY-MM-DD format');
             return false;
         }
-        
+
         try {
             // Add to allNews array
             allNews.push(newsItem);
-            
+
             // Save to localStorage
             saveNewsToStorage();
-            
+
             // Refresh display if we're in the right view
             if (currentView === 'today' || currentView === 'all') {
                 displayNews(currentView);
             }
-            
+
             return true;
         } catch (error) {
             console.error('Error adding news item:', error);
             return false;
         }
     }
-    
+
     // Get today's date in YYYY-MM-DD format
     function getTodayDate() {
         const today = new Date();
@@ -150,19 +150,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const day = String(today.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     }
-    
+
     // Filter news by today's date
     function getTodaysNews() {
         const today = getTodayDate();
         return allNews.filter(newsItem => newsItem.date === today);
     }
-    
+
     // Display news based on filter type
     function displayNews(filterType) {
         currentView = filterType;
-        
+
         let newsToDisplay = [];
-        
+
         if (filterType === 'today') {
             newsToDisplay = getTodaysNews();
             viewOldNewsBtn.textContent = 'View Old News';
@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
             viewOldNewsBtn.textContent = 'View Today\'s News';
             viewOldNewsBtn.classList.add('showing-all');
         }
-        
+
         // Clear grid with fade out animation
         const existingCards = document.querySelectorAll('.news-card');
         if (existingCards.length > 0) {
@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
             existingCards.forEach(card => {
                 card.classList.add('fade-out');
             });
-            
+
             // After fade out, clear and display new content
             setTimeout(() => {
                 renderNewsCards(newsToDisplay);
@@ -190,12 +190,12 @@ document.addEventListener('DOMContentLoaded', function() {
             renderNewsCards(newsToDisplay);
         }
     }
-    
+
     // Render news cards in the grid
     function renderNewsCards(newsList) {
         // Clear grid
         newsGrid.innerHTML = '';
-        
+
         if (newsList.length === 0) {
             if (currentView === 'today') {
                 newsGrid.innerHTML = '<div class="no-news">No news for today yet—check back later.</div>';
@@ -204,12 +204,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             return;
         }
-        
+
         // Display articles
         newsList.forEach((article, index) => {
             const newsCard = document.createElement('div');
             newsCard.className = 'news-card';
-            
+
             // Format the publish date
             const publishDate = new Date(article.published_at || article.date);
             const formattedDate = publishDate.toLocaleDateString('en-US', {
@@ -217,12 +217,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 month: 'short',
                 day: 'numeric'
             });
-            
+
             // Use placeholder image if no image is available
-            const imageUrl = article.image_url || 'https://placehold.co/600x400/0b0c10/66fcf1?text=Space+News';
-            
+            const imageUrl = article.image_url || 'https://placehold.co/600x400/0f172a/38bdf8?text=Space+News';
+
             newsCard.innerHTML = `
-                <img src="${imageUrl}" alt="${article.title}" class="news-image" onerror="this.src='https://placehold.co/600x400/0b0c10/66fcf1?text=Space+News'">
+                <img src="${imageUrl}" alt="${article.title}" class="news-image" onerror="this.src='https://placehold.co/600x400/0f172a/38bdf8?text=Space+News'">
                 <div class="news-content">
                     <h3>${article.title}</h3>
                     <p>${article.content || article.summary}</p>
@@ -233,23 +233,23 @@ document.addEventListener('DOMContentLoaded', function() {
                     ${article.url ? `<a href="${article.url}" target="_blank" class="read-more">Read Full Article →</a>` : ''}
                 </div>
             `;
-            
+
             newsGrid.appendChild(newsCard);
-            
+
             // Add animation delay for each card with fade-in effect
             setTimeout(() => {
                 newsCard.classList.add('fade-in');
             }, index * 100);
         });
     }
-    
+
     // Add sample news for demonstration
     function addSampleNews() {
         const today = getTodayDate();
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
         const yesterdayStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
-        
+
         const sampleNews = [
             {
                 id: '1',
@@ -280,17 +280,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 published_at: new Date(Date.now() - 86400000).toISOString()
             }
         ];
-        
+
         sampleNews.forEach(newsItem => {
             addNews(newsItem);
         });
     }
-    
+
     // Function to fetch news (existing functionality)
     function fetchNews() {
         // Show loading state
         newsGrid.innerHTML = '<div class="loading">Loading space news...</div>';
-        
+
         // Fetch news from SpaceFlightNews API
         fetch('https://api.spaceflightnewsapi.net/v4/articles/')
             .then(response => response.json())
@@ -303,20 +303,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 newsGrid.innerHTML = '<div class="error">Failed to load news. Please try again later.</div>';
             });
     }
-    
+
     // Function to search news
     function searchNews(term) {
         if (!term) {
             displayNews(currentView);
             return;
         }
-        
-        const filteredNews = allNews.filter(article => 
+
+        const filteredNews = allNews.filter(article =>
             article.title.toLowerCase().includes(term.toLowerCase()) ||
             (article.content || article.summary).toLowerCase().includes(term.toLowerCase()) ||
             (article.news_site || '').toLowerCase().includes(term.toLowerCase())
         );
-        
+
         // Clear grid with fade out animation
         const existingCards = document.querySelectorAll('.news-card');
         if (existingCards.length > 0) {
@@ -324,7 +324,7 @@ document.addEventListener('DOMContentLoaded', function() {
             existingCards.forEach(card => {
                 card.classList.add('fade-out');
             });
-            
+
             // After fade out, clear and display new content
             setTimeout(() => {
                 renderNewsCards(filteredNews);
@@ -334,7 +334,7 @@ document.addEventListener('DOMContentLoaded', function() {
             renderNewsCards(filteredNews);
         }
     }
-    
+
     // Set up automatic refresh at midnight
     function setupMidnightRefresh() {
         // Calculate time until next midnight
@@ -342,14 +342,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const nextMidnight = new Date();
         nextMidnight.setHours(24, 0, 0, 0); // Next midnight
         const timeUntilMidnight = nextMidnight - now;
-        
+
         // Set timeout to refresh at midnight
         setTimeout(() => {
             // Refresh display to show only today's news
             if (currentView === 'today') {
                 displayNews('today');
             }
-            
+
             // Set up recurring daily refresh
             setInterval(() => {
                 if (currentView === 'today') {
@@ -358,7 +358,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 86400000); // 24 hours
         }, timeUntilMidnight);
     }
-    
+
     // Toggle between today's news and all news
     function toggleNewsView() {
         if (currentView === 'today') {
@@ -367,22 +367,22 @@ document.addEventListener('DOMContentLoaded', function() {
             displayNews('today');
         }
     }
-    
+
     // Event listeners
     refreshBtn.addEventListener('click', fetchNews);
-    
-    searchBtn.addEventListener('click', function() {
+
+    searchBtn.addEventListener('click', function () {
         searchNews(searchInput.value);
     });
-    
-    searchInput.addEventListener('keyup', function(e) {
+
+    searchInput.addEventListener('keyup', function (e) {
         if (e.key === 'Enter') {
             searchNews(searchInput.value);
         }
     });
-    
+
     viewOldNewsBtn.addEventListener('click', toggleNewsView);
-    
+
     // Initial fetch
     fetchNews();
 });
