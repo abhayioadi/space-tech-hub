@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Space News - SpaceTech Hub</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="news.css">
     <link rel="stylesheet" href="shared-effects.css">
 </head>
+
 <body>
     <!-- Animated background canvas -->
     <canvas id="starfield"></canvas>
-    
+
     <!-- Glowing orbs for ambient lighting -->
     <div class="glowing-orb glowing-orb-1"></div>
     <div class="glowing-orb glowing-orb-2"></div>
-    
+
     <header>
         <nav class="navbar">
             <a href="/" class="nav-brand">SpaceTech Hub</a>
@@ -53,7 +56,7 @@
                 <input type="text" id="news-search" placeholder="Search news..." class="search-input">
                 <button id="news-search-btn" class="search-btn">Search</button>
             </div>
-            
+
             <div id="news-grid" class="news-grid">
                 <!-- News cards will be loaded here by JavaScript -->
             </div>
@@ -69,4 +72,5 @@
     <script src="shared-effects.js"></script>
     <script src="news.js"></script>
 </body>
+
 </html>
