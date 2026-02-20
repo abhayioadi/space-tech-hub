@@ -197,6 +197,14 @@ header {
     transform: translateY(0);
 }
 
+.search-note {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 0.75rem;
+    text-align: center;
+    opacity: 0.8;
+}
+
 /* APOD Content Section */
 .apod-container {
     padding: 4rem 2rem;
