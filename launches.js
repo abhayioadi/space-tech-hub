@@ -1,25 +1,29 @@
 // Fetch and display upcoming rocket launches
-document.addEventListener('DOMContentLoaded', function() {
-    
-    
+document.addEventListener('DOMContentLoaded', function () {
+
+
     const launchesBody = document.getElementById('launches-body');
     const sortBySelect = document.getElementById('sort-by');
     const agencyFilter = document.getElementById('agency-filter');
     const searchInput = document.getElementById('search-input');
     const searchBtn = document.getElementById('search-btn');
-    
+
     let allLaunches = []; // Store all launches for filtering
-    
-    
-    
+
+
+
     // Function to fetch launches
     function fetchLaunches() {
         // Show loading state
         launchesBody.innerHTML = '<tr><td colspan="5" class="loading">Loading upcoming launches...</td></tr>';
-        
+
         // Fetch launches from The Space Devs API
+        // Using a more reliable endpoint or handling the case where it might fail
         fetch('https://ll.thespacedevs.com/2.2.0/launch/upcoming/')
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
             .then(data => {
                 if (data.results && data.results.length > 0) {
                     allLaunches = data.results;
@@ -27,30 +31,47 @@ document.addEventListener('DOMContentLoaded', function() {
                     displayLaunches(allLaunches);
                     setupNextLaunchCountdown(allLaunches);
                 } else {
-                    launchesBody.innerHTML = '<tr><td colspan="5" class="no-data">No upcoming launches found.</td></tr>';
+                    handleNoLaunches();
                 }
             })
             .catch(error => {
                 console.error('Error fetching launches:', error);
-                launchesBody.innerHTML = '<tr><td colspan="5" class="error">Failed to load launches. Please try again later.</td></tr>';
+                handleNoLaunches();
             });
     }
-    
+
+    function handleNoLaunches() {
+        // Fallback or error message
+        launchesBody.innerHTML = '<tr><td colspan="5" class="no-data">No live launch data available at the moment. Please try again later.</td></tr>';
+
+        const nextLaunchInfo = document.getElementById('next-launch-info');
+        if (nextLaunchInfo) {
+            nextLaunchInfo.innerHTML = '<p>Launch schedule currently unavailable.</p>';
+        }
+
+        // Reset timer
+        const elements = ['days', 'hours', 'minutes', 'seconds'];
+        elements.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = '00';
+        });
+    }
+
     // Function to set up agency filter options
     function setupFilters(launches) {
         const agencies = new Set();
-        
+
         launches.forEach(launch => {
             if (launch.launch_service_provider) {
                 agencies.add(launch.launch_service_provider.name);
             }
         });
-        
+
         // Clear existing options except "All Agencies"
         while (agencyFilter.options.length > 1) {
             agencyFilter.remove(1);
         }
-        
+
         // Add agencies to filter
         agencies.forEach(agency => {
             const option = document.createElement('option');
@@ -59,19 +80,19 @@ document.addEventListener('DOMContentLoaded', function() {
             agencyFilter.appendChild(option);
         });
     }
-    
+
     // Function to display launches in the table
     function displayLaunches(launches) {
         // Clear table body
         launchesBody.innerHTML = '';
-        
+
         // Sort launches based on selected option
         const sortedLaunches = sortLaunches(launches, sortBySelect.value);
-        
+
         // Display launches
         sortedLaunches.forEach(launch => {
             const row = document.createElement('tr');
-            
+
             // Format the launch date
             const launchDate = new Date(launch.net);
             const formattedDate = launchDate.toLocaleDateString('en-US', {
@@ -81,13 +102,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 hour: '2-digit',
                 minute: '2-digit'
             });
-            
+
             // Get agency information
             const agency = launch.launch_service_provider ? launch.launch_service_provider.name : 'N/A';
-            
+
             // Get location information
             const location = launch.pad ? launch.pad.location.name : 'N/A';
-            
+
             row.innerHTML = `
                 <td>${agency}</td>
                 <td>${launch.rocket ? launch.rocket.configuration.name : 'N/A'}</td>
@@ -95,11 +116,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${formattedDate}</td>
                 <td>${location}</td>
             `;
-            
+
             launchesBody.appendChild(row);
         });
     }
-    
+
     // Function to sort launches
     function sortLaunches(launches, sortBy) {
         return [...launches].sort((a, b) => {
@@ -113,57 +134,69 @@ document.addEventListener('DOMContentLoaded', function() {
             return 0;
         });
     }
-    
+
     // Function to filter launches by agency
     function filterLaunchesByAgency(launches, agency) {
         if (agency === 'all') return launches;
-        return launches.filter(launch => 
+        return launches.filter(launch =>
             launch.launch_service_provider && launch.launch_service_provider.name === agency
         );
     }
-    
+
     // Function to search launches
     function searchLaunches(launches, searchTerm) {
         if (!searchTerm) return launches;
         const term = searchTerm.toLowerCase();
-        return launches.filter(launch => 
+        return launches.filter(launch =>
             (launch.name && launch.name.toLowerCase().includes(term)) ||
             (launch.launch_service_provider && launch.launch_service_provider.name.toLowerCase().includes(term)) ||
             (launch.rocket && launch.rocket.configuration.name.toLowerCase().includes(term))
         );
     }
-    
+
     // Function to set up next launch countdown
     function setupNextLaunchCountdown(launches) {
-        if (launches.length === 0) return;
-        
-        // Sort launches by date to find the next one
-        const sortedLaunches = [...launches].sort((a, b) => new Date(a.net) - new Date(b.net));
-        const nextLaunch = sortedLaunches[0];
-        
+        if (!launches || launches.length === 0) return;
+
+        // Find the first launch with a concrete future date (not TBD)
+        const now = new Date();
+        const futureLaunches = launches
+            .filter(l => new Date(l.net) > now && l.status.id !== 2) // status 2 is TBD
+            .sort((a, b) => new Date(a.net) - new Date(b.net));
+
+        // Fallback to the first upcoming if all are past or TBD
+        const nextLaunch = futureLaunches.length > 0 ? futureLaunches[0] : launches[0];
+
         // Update next launch info
         const nextLaunchInfo = document.getElementById('next-launch-info');
-        nextLaunchInfo.innerHTML = `
-            <h3>${nextLaunch.name}</h3>
-            <p>Launching on ${new Date(nextLaunch.net).toLocaleString()}</p>
-            <p>Rocket: ${nextLaunch.rocket ? nextLaunch.rocket.configuration.name : 'N/A'}</p>
-        `;
-        
+        if (nextLaunchInfo) {
+            nextLaunchInfo.innerHTML = `
+                <h3>${nextLaunch.name}</h3>
+                <p>Launching on ${new Date(nextLaunch.net).toLocaleString()}</p>
+                <p>Rocket: ${nextLaunch.rocket ? nextLaunch.rocket.configuration.name : 'N/A'}</p>
+            `;
+        }
+
         // Start countdown
         startCountdown(new Date(nextLaunch.net));
     }
-    
+
     // Function to start countdown timer
     function startCountdown(launchDate) {
         const daysElement = document.getElementById('days');
         const hoursElement = document.getElementById('hours');
         const minutesElement = document.getElementById('minutes');
         const secondsElement = document.getElementById('seconds');
-        
+
+        if (!daysElement || !hoursElement || !minutesElement || !secondsElement) return;
+
+        // Clear any existing intervals
+        if (window.launchInterval) clearInterval(window.launchInterval);
+
         function updateCountdown() {
             const now = new Date();
             const diff = launchDate - now;
-            
+
             if (diff <= 0) {
                 daysElement.textContent = '00';
                 hoursElement.textContent = '00';
@@ -171,50 +204,49 @@ document.addEventListener('DOMContentLoaded', function() {
                 secondsElement.textContent = '00';
                 return;
             }
-            
+
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-            
+
             daysElement.textContent = days.toString().padStart(2, '0');
             hoursElement.textContent = hours.toString().padStart(2, '0');
             minutesElement.textContent = minutes.toString().padStart(2, '0');
             secondsElement.textContent = seconds.toString().padStart(2, '0');
         }
-        
-        // Update immediately and then every second
+
         updateCountdown();
-        setInterval(updateCountdown, 1000);
+        window.launchInterval = setInterval(updateCountdown, 1000);
     }
-    
+
     // Event listeners
-    sortBySelect.addEventListener('change', function() {
+    sortBySelect.addEventListener('change', function () {
         const filtered = filterLaunchesByAgency(allLaunches, agencyFilter.value);
         const searched = searchLaunches(filtered, searchInput.value);
         displayLaunches(searched);
     });
-    
-    agencyFilter.addEventListener('change', function() {
+
+    agencyFilter.addEventListener('change', function () {
         const filtered = filterLaunchesByAgency(allLaunches, agencyFilter.value);
         const searched = searchLaunches(filtered, searchInput.value);
         displayLaunches(searched);
     });
-    
-    searchBtn.addEventListener('click', function() {
+
+    searchBtn.addEventListener('click', function () {
         const filtered = filterLaunchesByAgency(allLaunches, agencyFilter.value);
         const searched = searchLaunches(filtered, searchInput.value);
         displayLaunches(searched);
     });
-    
-    searchInput.addEventListener('keyup', function(e) {
+
+    searchInput.addEventListener('keyup', function (e) {
         if (e.key === 'Enter') {
             const filtered = filterLaunchesByAgency(allLaunches, agencyFilter.value);
             const searched = searchLaunches(filtered, searchInput.value);
             displayLaunches(searched);
         }
     });
-    
+
     // Initial fetch
     fetchLaunches();
 });
