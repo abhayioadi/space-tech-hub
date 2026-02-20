@@ -132,6 +132,71 @@ header {
     opacity: 0;
 }
 
+/* Date Search Section */
+.search-section {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    animation: fadeInUp 0.8s ease-out 0.3s forwards;
+    opacity: 0;
+}
+
+.search-box {
+    background: var(--bg-card);
+    padding: 1rem;
+    border-radius: 16px;
+    border: 1px solid var(--border-light);
+    backdrop-filter: blur(12px);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.date-input {
+    flex: 1;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--border-light);
+    color: var(--text-primary);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-family: var(--font-main);
+    font-size: 1rem;
+    outline: none;
+    transition: var(--transition-smooth);
+}
+
+.date-input:focus {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 15px var(--accent-glow);
+}
+
+/* Custom calendar icon color for some browsers */
+.date-input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+.search-btn {
+    background: var(--accent-primary);
+    color: var(--bg-dark);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    white-space: nowrap;
+}
+
+.search-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px var(--accent-glow);
+}
+
+.search-btn:active {
+    transform: translateY(0);
+}
+
 /* APOD Content Section */
 .apod-container {
     padding: 4rem 2rem;
@@ -152,7 +217,8 @@ header {
 
 .apod-media-wrapper {
     width: 100%;
-    min-height: 400px; /* Placeholder height */
+    min-height: 400px;
+    /* Placeholder height */
     background: #000;
     display: flex;
     justify-content: center;
@@ -160,7 +226,8 @@ header {
     position: relative;
 }
 
-.apod-image, .apod-video {
+.apod-image,
+.apod-video {
     max-width: 100%;
     max-height: 80vh;
     width: auto;
@@ -231,7 +298,9 @@ header {
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Error State */
@@ -250,6 +319,7 @@ header {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -272,17 +342,21 @@ footer {
         flex-direction: column;
         gap: 1rem;
     }
+
     .nav-menu {
         gap: 1rem;
         flex-wrap: wrap;
         justify-content: center;
     }
+
     .api-header h1 {
         font-size: 2.5rem;
     }
+
     .apod-info {
         padding: 1.5rem;
     }
+
     .apod-title {
         font-size: 1.5rem;
     }
