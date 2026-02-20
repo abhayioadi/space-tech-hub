@@ -135,7 +135,7 @@ header {
 /* Date Search Section */
 .search-section {
     max-width: 600px;
-    margin: 0 auto;
+    margin: 0 auto 3rem;
     padding: 0 2rem;
     animation: fadeInUp 0.8s ease-out 0.3s forwards;
     opacity: 0;
@@ -198,11 +198,12 @@ header {
 }
 
 .search-note {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    margin-top: 1rem;
     text-align: center;
-    opacity: 0.8;
+    position: relative;
+    z-index: 10;
 }
 
 /* APOD Content Section */
