@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASA APOD - SpaceTech Hub</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="nasa.css">
+    <link rel="stylesheet" href="shared-effects.css">
+</head>
+
+<body>
+    <!-- Animated background canvas -->
+    <canvas id="starfield"></canvas>
+
+    <!-- Glowing orbs for ambient lighting -->
+    <div class="glowing-orb glowing-orb-1"></div>
+    <div class="glowing-orb glowing-orb-2"></div>
+
+    <header>
+        <nav class="navbar">
+            <a href="/" class="nav-brand">SpaceTech Hub</a>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="news.html" class="nav-link">News</a></li>
+                <li class="nav-item"><a href="launches.html" class="nav-link">Launches</a></li>
+                <li class="nav-item"><a href="nasa.html" class="nav-link active">APOD</a></li>
+                <li class="nav-item"><a href="technologies.html" class="nav-link">Technologies</a></li>
+                <li class="nav-item"><a href="research.html" class="nav-link">Research</a></li>
+                <li class="nav-item"><a href="gallery.html" class="nav-link">Gallery</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="api-header">
+            <h1>Astronomy Picture of the Day</h1>
+            <p>Discover the cosmos, one day at a time.</p>
+        </section>
+
+        <section class="apod-container" id="apod-content">
+            <!-- Loading Indicator -->
+            <div class="loading-indicator">
+                <div class="spinner"></div>
+                <p>Connecting to NASA...</p>
+            </div>
+            <!-- APOD Content will be injected here by JS -->
+        </section>
+    </main>
+
+    <footer>
+        <div class="aurora-overlay"></div>
+        <p>&copy; 2025 SpaceTech Hub. All rights reserved.</p>
+    </footer>
+
+    <script src="shared-effects.js"></script>
+    <script src="nasa.js"></script>
+</body>
+
+</html>
