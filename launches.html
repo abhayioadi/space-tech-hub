@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,14 +9,15 @@
     <link rel="stylesheet" href="launches.css">
     <link rel="stylesheet" href="shared-effects.css">
 </head>
+
 <body>
     <!-- Animated background canvas -->
     <canvas id="starfield"></canvas>
-    
+
     <!-- Glowing orbs for ambient lighting -->
     <div class="glowing-orb glowing-orb-1"></div>
     <div class="glowing-orb glowing-orb-2"></div>
-    
+
     <header>
         <nav class="navbar">
             <a href="/" class="nav-brand">SpaceTech Hub</a>
@@ -23,6 +25,7 @@
                 <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
                 <li class="nav-item"><a href="news.html" class="nav-link">News</a></li>
                 <li class="nav-item"><a href="launches.html" class="nav-link active">Launches</a></li>
+                <li class="nav-item"><a href="nasa.html" class="nav-link">APOD</a></li>
                 <li class="nav-item"><a href="technologies.html" class="nav-link">Technologies</a></li>
                 <li class="nav-item"><a href="research.html" class="nav-link">Research</a></li>
                 <li class="nav-item"><a href="gallery.html" class="nav-link">Gallery</a></li>
@@ -80,12 +83,12 @@
                     </select>
                 </div>
             </div>
-            
+
             <div class="search-container">
                 <input type="text" id="search-input" placeholder="Search launches..." class="search-input">
                 <button id="search-btn" class="search-btn">Search</button>
             </div>
-            
+
             <div class="table-container">
                 <table id="launches-table" class="launches-table">
                     <thead>
@@ -114,4 +117,5 @@
     <script src="shared-effects.js"></script>
     <script src="launches.js"></script>
 </body>
+
 </html>
