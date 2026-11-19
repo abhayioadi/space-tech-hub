@@ -42,10 +42,15 @@
 
         <section class="search-section">
             <div class="search-box">
-                <input type="date" id="apod-date" class="date-input">
+                <input type="date" id="apod-date" class="date-input" min="1995-06-16">
                 <button id="search-btn" class="search-btn">Explore Date</button>
             </div>
-            <div class="search-note">Note: Enter the date (DD/MM/YYYY) to view that days Astronomy Picture.</div>
+            <div class="quick-actions">
+                <button type="button" class="quick-btn" id="btn-today">Today</button>
+                <button type="button" class="quick-btn" id="btn-yesterday">Yesterday</button>
+                <button type="button" class="quick-btn" id="btn-random">Random Date</button>
+            </div>
+            <div class="search-note">Select any date between June 16, 1995 and today to view that day's Astronomy Picture.</div>
         </section>
 
         <section class="apod-container" id="apod-content">
